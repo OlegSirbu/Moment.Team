@@ -1,21 +1,21 @@
 import {
-  ADD_NEW_USER,
-  CHANGE_USER,
-  DELETE_USER,
+  ADD_NEW_ACCOUNT,
+  CHANGE_ACCOUNT,
+  DELETE_ACCOUNT,
   TOGGLE_NEW_FORM,
   TOGGLE_FORM
-} from "../actions/users";
+} from "../constants";
 
 import store from "../constants/store";
 const initialState = store.users;
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ADD_NEW_USER:
+    case ADD_NEW_ACCOUNT:
       state.shift(); // remove first element with obj isNew
       return [...state, { ...action.payload }];
 
-    case CHANGE_USER:
+    case CHANGE_ACCOUNT:
       return [
         ...state.map(user => {
           if (user.id === action.payload.id) {
@@ -29,7 +29,7 @@ export default (state = initialState, action) => {
         })
       ];
 
-    case DELETE_USER:
+    case DELETE_ACCOUNT:
       return [...state.filter(user => user.id !== action.payload)];
 
     case TOGGLE_NEW_FORM:

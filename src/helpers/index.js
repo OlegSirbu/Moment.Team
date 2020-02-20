@@ -8,7 +8,7 @@ const getTextUser = ({
   exTaxCode,
   comment
 }) => {
-  return `${accNum} - ${category} ${vatPer &&
+  return `${accNum} - ${category} - ${vatPer &&
     vatPer + "%"} ${vatCatCode} ${accName && "-" + accName} ${comment &&
     comment + ","} ${exRevClass && exRevClass + ","} ${exTaxCode &&
     exTaxCode + ","}`;
@@ -22,7 +22,7 @@ const getTextUser = ({
 const getNextId = (users = []) =>
   Math.max.apply(
     Math,
-    users.map(user => user.id)
+    users.filter(u => u.id).map(a => a.id && a.id)
   ) + 1;
 
 // sorted array of users by accNum

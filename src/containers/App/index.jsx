@@ -1,11 +1,11 @@
 import React from "react";
-import UserList from "../UserList";
+import ListAccount from "../ListAccount";
 import SearchInput from "../../components/SearchInput";
 
 const App = () => (
   <div className="app-main-style">
     <SearchInput />
-    <UserList />
+    <ListAccount />
   </div>
 );
 

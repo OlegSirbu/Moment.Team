@@ -18,9 +18,9 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    form.validateFields((err, values) => {
+    form.validateFields((err, data) => {
       if (!err) {
-        onSave(values.id, form.getFieldsValue());
+        onSave({ ...data, id: values.id }, form.getFieldsValue());
       }
     });
   };
@@ -53,7 +53,10 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
         <Form.Item labelCol={{ span: 8 }} label="Vat percentage">
           <Col span={16}>
             {form.getFieldDecorator("vatPer", {
-              initialValue: values.vatPer
+              initialValue: values.vatPer,
+              rules: [
+                { required: true, message: "Please type some percentage" }
+              ]
             })(<Input type="number" addonAfter={<div>%</div>} />)}
           </Col>
         </Form.Item>
@@ -68,7 +71,8 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
         <Form.Item labelCol={{ span: 8 }} label="Account name">
           <Col span={16}>
             {form.getFieldDecorator("accName", {
-              initialValue: values.accName
+              initialValue: values.accName,
+              rules: [{ required: true, message: "Please type some name" }]
             })(<Input />)}
           </Col>
         </Form.Item>

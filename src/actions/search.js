@@ -1,6 +1,6 @@
-export const SEARCH_USER = "search/SEARCH_USER";
+import { SEARCH_VALUE } from "../constants";
 
-export const searchUser = value => ({
-  type: SEARCH_USER,
+export const searchValueAct = value => ({
+  type: SEARCH_VALUE,
   payload: value
 });

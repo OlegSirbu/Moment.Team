@@ -4,12 +4,12 @@ import { List, Button, Col, Row } from "antd";
 import "./style.css";
 
 import {
-  deleteUser,
-  addNewUser,
-  changeUser,
+  addNewAccount,
+  changeAccount,
+  deleteAccount,
   toggleNewForm,
   toggleForm
-} from "../../actions/users";
+} from "../../actions/account";
 
 import {
   getTextByItemForRow,
@@ -19,24 +19,24 @@ import {
 
 import FormUser from "../../components/Form";
 
-const UserList = () => {
+const ListAccount = () => {
   const dispatch = useDispatch();
-  const usersStore = useSelector(state => state.users);
+  const accountStore = useSelector(state => state.account);
   const searchValue = useSelector(state => state.search);
 
-  const filterUsersBySearch = usersStore =>
+  const filterAccountsBySearch = usersStore =>
     usersStore.filter(
-      user =>
-        user.accNum.toString().includes(searchValue) ||
-        user.accName.toString().includes(searchValue)
+      ({ accNum, accName }) =>
+        accNum.toString().includes(searchValue) ||
+        accName.toString().includes(searchValue)
     );
 
-  const handleRemoveUser = id => {
-    dispatch(deleteUser(id));
+  const handleDeleteAcc = id => {
+    dispatch(deleteAccount(id));
   };
 
-  const handleUpdateUser = (id, item) => {
-    dispatch(changeUser(id, item));
+  const handleUpdateAcc = item => {
+    dispatch(changeAccount(item));
   };
 
   const handleCloseForm = id => {
@@ -47,8 +47,8 @@ const UserList = () => {
     }
   };
 
-  const handleCreateNewUser = (id = getNextId(usersStore), newUser) => {
-    dispatch(addNewUser({ ...newUser, id }));
+  const handleAddNewAcc = (id = getNextId(accountStore), newUser) => {
+    dispatch(addNewAccount({ ...newUser, id }));
   };
 
   const renderRowItem = ({ isExisting, isNew, ...item }) =>
@@ -57,8 +57,8 @@ const UserList = () => {
         {
           <FormUser
             onClose={handleCloseForm}
-            onSave={isNew ? handleCreateNewUser : handleUpdateUser}
-            onRemove={!isNew && handleRemoveUser}
+            onSave={isNew ? handleAddNewAcc : handleUpdateAcc}
+            onRemove={!isNew && handleDeleteAcc}
             data={!isNew && item}
           />
         }
@@ -97,21 +97,21 @@ const UserList = () => {
     </Row>
   );
 
-  // sorted array of users and filter by search
-  const dataUsers = sortUsersByAccNumber(
-    searchValue !== "" ? filterUsersBySearch(usersStore) : usersStore
+  // sorted array of accounts and filter by search
+  const dataAccounts = sortUsersByAccNumber(
+    searchValue !== "" ? filterAccountsBySearch(accountStore) : accountStore
   );
   return (
     <React.Fragment>
       <List
-        className="user-list"
+        className="acc-list"
         header={renderListHeader}
         bordered
-        dataSource={dataUsers}
+        dataSource={dataAccounts}
         renderItem={renderRowItem}
       />
     </React.Fragment>
   );
 };
 
-export default UserList;
+export default ListAccount;
