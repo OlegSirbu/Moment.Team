@@ -1,10 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Button, Form, Input, Radio, Row, Col } from "antd";
 
 const defUserValues = {
   accNum: null,
   category: "Sales",
-  vatPer: null,
+  vatPer: "",
   vatCatCode: null,
   accName: "",
   exRevClass: "",
@@ -12,20 +13,19 @@ const defUserValues = {
   comment: ""
 };
 
-const UserForm = ({
-  form,
-  onSave,
-  onClose,
-  onRemove,
-  data: { ...values } = defUserValues
-}) => {
+const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
+  const values = data ? { ...data } : defUserValues; // if don`t have data set default and it means show form for new user
+
   const handleSubmit = e => {
     e.preventDefault();
-    onSave(values.id, form.getFieldsValue()); // if have id need to update or create new user
+    form.validateFields((err, values) => {
+      if (!err) {
+        onSave(values.id, form.getFieldsValue());
+      }
+    });
   };
 
   const handleReset = id => {
-    // form.resetFields();
     onClose(id);
   };
 
@@ -35,7 +35,8 @@ const UserForm = ({
         <Form.Item labelCol={{ span: 8 }} label="Account number">
           <Col span={16}>
             {form.getFieldDecorator("accNum", {
-              initialValue: values.accNum
+              initialValue: values.accNum,
+              rules: [{ required: true, message: "Please type some number" }]
             })(<Input type="number" />)}
           </Col>
         </Form.Item>
@@ -92,12 +93,7 @@ const UserForm = ({
           <Col span={16}>
             {form.getFieldDecorator("comment", {
               initialValue: values.comment
-            })(
-              <Input.TextArea
-                autoSize={{ minRows: 3, maxRows: 5 }}
-                autoSize="textarea"
-              />
-            )}
+            })(<Input.TextArea autoSize={{ minRows: 3, maxRows: 5 }} />)}
           </Col>
         </Form.Item>
 
@@ -123,6 +119,12 @@ const UserForm = ({
       </Form>
     </Col>
   );
+};
+
+UserForm.propTypes = {
+  form: PropTypes.object.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 export default Form.create()(UserForm);

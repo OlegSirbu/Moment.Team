@@ -1,85 +1,58 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { List, Button, Col, Row } from "antd";
 import "./style.css";
-import FormUser from "../Form";
-import { getTextByItemForRow } from "../../helpers";
+
+import {
+  deleteUser,
+  addNewUser,
+  changeUser,
+  toggleNewForm,
+  toggleForm
+} from "../../actions/users";
+
+import {
+  getTextByItemForRow,
+  getNextId,
+  sortUsersByAccNumber
+} from "../../helpers";
+
+import FormUser from "../../components/Form";
 
 const UserList = () => {
-  const sortUsersByAccNumber = users =>
-    users.sort((a, b) => a.accNum - b.accNum);
-
-  const [usersData, setUsersData] = useState(
-    useSelector(state => state.users.users)
-  );
   const dispatch = useDispatch();
+  const usersStore = useSelector(state => state.users);
+  const searchValue = useSelector(state => state.search);
 
-  const handlerAddNewUser = () => {
-    setUsersData([{ isNew: true }, ...usersData]);
-  };
+  const filterUsersBySearch = usersStore =>
+    usersStore.filter(
+      user =>
+        user.accNum.toString().includes(searchValue) ||
+        user.accName.toString().includes(searchValue)
+    );
 
   const handleRemoveUser = id => {
-    setUsersData(usersData.filter(user => user.id !== id));
-  };
-
-  const handleShowEditUserForm = item => {
-    setUsersData(
-      usersData.map(user => {
-        if (user.id === item.id) {
-          return {
-            ...user,
-            isExisting: !user.isExisting
-          };
-        }
-        return user;
-      })
-    );
+    dispatch(deleteUser(id));
   };
 
   const handleUpdateUser = (id, item) => {
-    const newUser = usersData.map(user => {
-      if (user.id === id) {
-        return {
-          ...user,
-          isExisting: !user.isExisting,
-          ...item
-        };
-      }
-      return user;
-    });
-    setUsersData(newUser);
+    dispatch(changeUser(id, item));
   };
 
   const handleCloseForm = id => {
     if (!id) {
-      const newUsers = usersData.shift();
-      setUsersData(newUsers);
+      dispatch(toggleNewForm());
+    } else {
+      dispatch(toggleForm(id));
     }
-    setUsersData(
-      usersData.map(user => {
-        if (user.id === id) {
-          return { ...user, isExisting: false };
-        }
-        return user;
-      })
-    );
   };
 
-  const handleCreateNewUser = newUser => {
-    const getNextId = () =>
-      Math.max.apply(
-        Math,
-        usersData.map(function(o) {
-          return o.id;
-        })
-      ) + 1; // get max id value and iterate it + 1;
-
-    const newUsers = [...usersData, { ...newUser, id: getNextId() }];
-    setUsersData(newUsers);
+  const handleCreateNewUser = (id = getNextId(usersStore), newUser) => {
+    dispatch(addNewUser({ ...newUser, id }));
   };
 
   const renderRowItem = ({ isExisting, isNew, ...item }) =>
-    isNew || isExisting ? (
+    isNew || isExisting ? ( // check if have some key show form
       <List.Item>
         {
           <FormUser
@@ -91,12 +64,13 @@ const UserList = () => {
         }
       </List.Item>
     ) : (
+      // show row with data
       <List.Item
         actions={[
           <Button
             type="link"
             icon="form"
-            onClick={() => handleShowEditUserForm(item)}
+            onClick={() => dispatch(toggleForm(item.id))}
           >
             Edit
           </Button>
@@ -106,29 +80,37 @@ const UserList = () => {
       </List.Item>
     );
 
+  const renderListHeader = (
+    <Row type="flex" align="middle">
+      <Col span={18}>
+        <span>Accounts</span>
+      </Col>
+      <Col span={6} style={{ textAlign: "right" }}>
+        <Button
+          style={{ textAlign: "right" }}
+          type="link"
+          onClick={() => dispatch(toggleNewForm(true))}
+        >
+          + New account
+        </Button>
+      </Col>
+    </Row>
+  );
+
+  // sorted array of users and filter by search
+  const dataUsers = sortUsersByAccNumber(
+    searchValue !== "" ? filterUsersBySearch(usersStore) : usersStore
+  );
   return (
-    <List
-      className="user-list"
-      header={
-        <Row type="flex" align="middle">
-          <Col span={18}>
-            <span>Accounts</span>
-          </Col>
-          <Col span={6} style={{ textAlign: "right" }}>
-            <Button
-              style={{ textAlign: "right" }}
-              type="link"
-              onClick={handlerAddNewUser}
-            >
-              + New account
-            </Button>
-          </Col>
-        </Row>
-      }
-      bordered
-      dataSource={sortUsersByAccNumber(usersData)}
-      renderItem={renderRowItem}
-    />
+    <React.Fragment>
+      <List
+        className="user-list"
+        header={renderListHeader}
+        bordered
+        dataSource={dataUsers}
+        renderItem={renderRowItem}
+      />
+    </React.Fragment>
   );
 };
 
