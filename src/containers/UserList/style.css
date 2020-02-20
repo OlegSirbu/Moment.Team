@@ -1,0 +1,6 @@
+.user-list {
+  max-width: 700px;
+}
+.user-list .ant-list-header {
+  background-color: #dedede;
+}
