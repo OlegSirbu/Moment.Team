@@ -36,7 +36,7 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
           <Col span={16}>
             {form.getFieldDecorator("accNum", {
               initialValue: values.accNum,
-              rules: [{ required: true, message: "Please type some number" }]
+              rules: [{ required: true }]
             })(<Input type="number" />)}
           </Col>
         </Form.Item>
@@ -54,9 +54,7 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
           <Col span={16}>
             {form.getFieldDecorator("vatPercentage", {
               initialValue: values.vatPercentage,
-              rules: [
-                { required: true, message: "Please type some percentage" }
-              ]
+              rules: [{ required: true }]
             })(<Input type="number" addonAfter={<div>%</div>} />)}
           </Col>
         </Form.Item>
@@ -72,7 +70,7 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
           <Col span={16}>
             {form.getFieldDecorator("accName", {
               initialValue: values.accName,
-              rules: [{ required: true, message: "Please type some name" }]
+              rules: [{ required: true }]
             })(<Input />)}
           </Col>
         </Form.Item>

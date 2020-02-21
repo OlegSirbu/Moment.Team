@@ -32,11 +32,10 @@ export default (state = initialState.accounts, action) => {
         data: []
       };
     case ADD_NEW_ACCOUNT:
-      state.data.shift(); // remove first element with obj isNew
+      state.data.length > 0 && state.data.shift(); // remove first element with obj isNew
       return { ...state, data: [...state.data, { ...action.payload }] };
 
     case CHANGE_ACCOUNT:
-      debugger;
       return {
         ...state,
         data: [

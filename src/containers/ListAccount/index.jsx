@@ -10,15 +10,11 @@ import {
   toggleNewForm,
   toggleForm,
   fetchingAccountsAPI
-} from "../../actions/account";
+} from "actions/account";
 
-import {
-  getTextByItemForRow,
-  getNextId,
-  sortUsersByAccNumber
-} from "../../helpers";
+import { getTextByItemForRow, getNextId, sortUsersByAccNumber } from "helpers";
 
-import FormUser from "../../components/Form";
+import FormUser from "components/Form";
 
 const ListAccount = () => {
   const dispatch = useDispatch();
@@ -31,7 +27,8 @@ const ListAccount = () => {
 
   const filterAccountsBySearch = usersStore =>
     usersStore.filter(
-      ({ accNum, accName }) =>
+      ({ accNum = "", accName = "", isNew }) =>
+        isNew || // need to check if search return empty array and user click to add new account
         accNum.toString().includes(searchValue) ||
         accName.toString().includes(searchValue)
     );
@@ -55,6 +52,23 @@ const ListAccount = () => {
   const handleAddNewAcc = (id = getNextId(accountStore.data), newUser) => {
     dispatch(addNewAccount({ ...newUser, id }));
   };
+
+  const renderListHeader = (
+    <Row type="flex" align="middle">
+      <Col span={18}>
+        <span>Accounts</span>
+      </Col>
+      <Col span={6} style={{ textAlign: "right" }}>
+        <Button
+          style={{ textAlign: "right" }}
+          type="link"
+          onClick={() => dispatch(toggleNewForm(true))}
+        >
+          <Icon type="plus" /> New account
+        </Button>
+      </Col>
+    </Row>
+  );
 
   const renderRowItem = ({ isExisting, isNew, ...item }) =>
     isNew || isExisting ? ( // check if have some key show form
@@ -85,25 +99,9 @@ const ListAccount = () => {
       </List.Item>
     );
 
-  const renderListHeader = (
-    <Row type="flex" align="middle">
-      <Col span={18}>
-        <span>Accounts</span>
-      </Col>
-      <Col span={6} style={{ textAlign: "right" }}>
-        <Button
-          style={{ textAlign: "right" }}
-          type="link"
-          onClick={() => dispatch(toggleNewForm(true))}
-        >
-          <Icon type="plus" /> New account
-        </Button>
-      </Col>
-    </Row>
-  );
-
   if (accountStore.loading) return <div>Loading...</div>;
   if (accountStore.error) return <h1>We have some error!</h1>;
+
   // sorted array of accounts and filter by search
   const dataAccounts = sortUsersByAccNumber(
     searchValue !== ""
@@ -111,15 +109,13 @@ const ListAccount = () => {
       : accountStore.data
   );
   return (
-    <React.Fragment>
-      <List
-        className="acc-list"
-        header={renderListHeader}
-        bordered
-        dataSource={dataAccounts}
-        renderItem={renderRowItem}
-      />
-    </React.Fragment>
+    <List
+      className="acc-list"
+      header={renderListHeader}
+      bordered
+      dataSource={dataAccounts}
+      renderItem={renderRowItem}
+    />
   );
 };
 
