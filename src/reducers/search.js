@@ -1,7 +1,7 @@
 import { SEARCH_VALUE } from "../constants";
-import store from "../constants/store";
+import initialState from "./initialState";
 
-export default (state = store.searchValue, action) => {
+export default (state = initialState.searchValue, action) => {
   switch (action.type) {
     case SEARCH_VALUE:
       return action.payload;

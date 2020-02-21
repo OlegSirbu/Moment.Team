@@ -5,7 +5,7 @@ import { Button, Form, Input, Radio, Row, Col } from "antd";
 const defUserValues = {
   accNum: null,
   category: "Sales",
-  vatPer: "",
+  vatPercentage: "",
   vatCatCode: null,
   accName: "",
   exRevClass: "",
@@ -52,8 +52,8 @@ const UserForm = ({ form, onSave, onClose, onRemove, data }) => {
         </Form.Item>
         <Form.Item labelCol={{ span: 8 }} label="Vat percentage">
           <Col span={16}>
-            {form.getFieldDecorator("vatPer", {
-              initialValue: values.vatPer,
+            {form.getFieldDecorator("vatPercentage", {
+              initialValue: values.vatPercentage,
               rules: [
                 { required: true, message: "Please type some percentage" }
               ]

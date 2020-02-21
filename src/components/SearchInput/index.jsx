@@ -10,10 +10,10 @@ const SearchInput = () => {
   };
 
   return (
-    <Input
+    <Input.Search
       placeholder="Please type here Account name or Account number"
       size="large"
-      addonAfter={<Icon type="search" />}
+      enterButton
       onChange={e => handleSetSearch(e.target.value)}
     />
   );

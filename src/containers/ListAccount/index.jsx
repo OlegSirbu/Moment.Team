@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { List, Button, Col, Row } from "antd";
+import { List, Button, Col, Row, Icon } from "antd";
 import "./style.css";
 
 import {
@@ -8,7 +8,8 @@ import {
   changeAccount,
   deleteAccount,
   toggleNewForm,
-  toggleForm
+  toggleForm,
+  fetchingAccountsAPI
 } from "../../actions/account";
 
 import {
@@ -23,6 +24,10 @@ const ListAccount = () => {
   const dispatch = useDispatch();
   const accountStore = useSelector(state => state.account);
   const searchValue = useSelector(state => state.search);
+
+  useEffect(() => {
+    dispatch(fetchingAccountsAPI());
+  }, []);
 
   const filterAccountsBySearch = usersStore =>
     usersStore.filter(
@@ -47,7 +52,7 @@ const ListAccount = () => {
     }
   };
 
-  const handleAddNewAcc = (id = getNextId(accountStore), newUser) => {
+  const handleAddNewAcc = (id = getNextId(accountStore.data), newUser) => {
     dispatch(addNewAccount({ ...newUser, id }));
   };
 
@@ -91,15 +96,19 @@ const ListAccount = () => {
           type="link"
           onClick={() => dispatch(toggleNewForm(true))}
         >
-          + New account
+          <Icon type="plus" /> New account
         </Button>
       </Col>
     </Row>
   );
 
+  if (accountStore.loading) return <div>Loading...</div>;
+  if (accountStore.error) return <h1>We have some error!</h1>;
   // sorted array of accounts and filter by search
   const dataAccounts = sortUsersByAccNumber(
-    searchValue !== "" ? filterAccountsBySearch(accountStore) : accountStore
+    searchValue !== ""
+      ? filterAccountsBySearch(accountStore.data)
+      : accountStore.data
   );
   return (
     <React.Fragment>

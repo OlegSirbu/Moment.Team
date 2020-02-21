@@ -1,15 +1,15 @@
 const getTextUser = ({
   accNum,
   category,
-  vatPer,
+  vatPercentage,
   vatCatCode,
   accName,
   exRevClass,
   exTaxCode,
   comment
 }) => {
-  return `${accNum} - ${category} - ${vatPer &&
-    vatPer + "%"} ${vatCatCode} ${accName && "-" + accName} ${comment &&
+  return `${accNum} - ${category} - ${vatPercentage &&
+    vatPercentage + "%"} ${vatCatCode} ${accName && "-" + accName} ${comment &&
     comment + ","} ${exRevClass && exRevClass + ","} ${exTaxCode &&
     exTaxCode + ","}`;
 };

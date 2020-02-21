@@ -3,8 +3,39 @@ import {
   TOGGLE_NEW_FORM,
   ADD_NEW_ACCOUNT,
   CHANGE_ACCOUNT,
-  DELETE_ACCOUNT
+  DELETE_ACCOUNT,
+  FETCH_ACCOUNTS,
+  FETCH_ACCOUNTS_SUCCESS,
+  FETCH_ACCOUNTS_FAILED
 } from "../constants";
+
+import getAllAccounts from "../api/accountsApi";
+
+export function fetchingAccountsAPI() {
+  return async dispatch => {
+    dispatch(fetchAccounts());
+    try {
+      const accounts = await getAllAccounts();
+      dispatch(fetchAccountsSuccess(accounts));
+    } catch (error) {
+      dispatch(fetchAccountsError(error));
+    }
+  };
+}
+
+export const fetchAccounts = () => ({
+  type: FETCH_ACCOUNTS
+});
+
+export const fetchAccountsSuccess = accounts => ({
+  type: FETCH_ACCOUNTS_SUCCESS,
+  payload: accounts
+});
+
+export const fetchAccountsError = error => ({
+  type: FETCH_ACCOUNTS_FAILED,
+  payload: error
+});
 
 export const toggleNewForm = (isShow = false) => ({
   type: TOGGLE_NEW_FORM,
