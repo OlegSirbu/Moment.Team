@@ -38,7 +38,7 @@ const getAllAccounts = () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(Object.assign([], accounts));
-    }, 100);
+    }, 1500);
   });
 };
 
